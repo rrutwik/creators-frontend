@@ -11,9 +11,7 @@ function UserMenu({ username, credits, onAddCredits }: UserMenuProps) {
     // const handleClose = () => {
     //     setAnchorEl(null);
     // };
-
     // // Razorpay integration logic here...
-
     // return (
     //     <>
     //         <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>

@@ -1,14 +1,16 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, ResponseType } from 'axios';
 import Cookies from 'js-cookie';
+import { ChatSession } from '../interfaces';
 
 const BASE_URL = 'http://localhost:3000';
 
 export const getAccessToken = () => Cookies.get('session_token');
 export const getRefreshToken = () => Cookies.get('refresh_token');
 export const isAuthenticated = () => !!getAccessToken();
-export const setAccessToken = (token: string) => Cookies.set('session_token', token, { expires: 1 });
-export const setRefreshToken = (token: string) => Cookies.set('refresh_token', token, { expires: 1 });
-
+export const setAccessToken = (token: string) =>
+    Cookies.set('session_token', token, { expires: 1 });
+export const setRefreshToken = (token: string) =>
+    Cookies.set('refresh_token', token, { expires: 1 });
 
 const getAuthenticatedAxiosInstance = (): AxiosInstance => {
     const accessToken = getAccessToken();
@@ -100,27 +102,31 @@ export const loginWithGoogle = (data: {}) => {
 };
 
 export const getPastChats = async (offset: number, limit: number) => {
-    const data = await handleRequest(() => getAuthenticatedAxiosInstance().get('/user/chats', { params: { offset, limit } }));
+    const data = await handleRequest(() =>
+        getAuthenticatedAxiosInstance().get('/chat', { params: { offset, limit } })
+    );
     return data.data;
 };
 
 export const getAvailableBots = () => {
     return {
-        data: [
-            { uuid: 'gpt-chat', name: 'Gita GPT', createdAt: new Date() },
-        ]
-    }
+        data: [{ uuid: 'gpt-chat', name: 'Gita GPT', createdAt: new Date() }],
+    };
 };
 
 export const createOrder = (body: { amount: number }) => {
-    return handleRequest(() => getAuthenticatedAxiosInstance().post('/user/create_razorpay_order', body));
+    return handleRequest(() =>
+        getAuthenticatedAxiosInstance().post('/user/create_razorpay_order', body)
+    );
 };
 
 export const getChat = (chatId: string) => {
-    return handleRequest(() => getAuthenticatedAxiosInstance().get(`/chat/${chatId}/messages`));
-}
+    return handleRequest(() => getAuthenticatedAxiosInstance().get(`/chat/${chatId}`));
+};
 
-export const sendMessage = (chatId: string, message: string) => {
-    return handleRequest(() => getAuthenticatedAxiosInstance().post(`/chat/${chatId}/send_message`, { message }));
-}
+export const sendMessage = (message: string, chatUUID?: string) => {
+    return handleRequest<{message: string, data: ChatSession}>(() =>
+        getAuthenticatedAxiosInstance().post(`/chat/message`, { chat_id: chatUUID, message })
+    );
+};
 export {}; // Ensure TypeScript recognizes this file as a module

@@ -24,11 +24,17 @@ const GoogleLoginComponent = ({ isSuccess }: { isSuccess: (value: boolean) => vo
     };
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
-            <Typography variant="h4" gutterBottom>
+        <Box
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            minHeight='100vh'
+        >
+            <Typography variant='h4' gutterBottom>
                 Sign in with Google
             </Typography>
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && <Alert severity='error'>{error}</Alert>}
             <GoogleLogin
                 useOneTap
                 onSuccess={handleLoginSuccess}

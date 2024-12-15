@@ -1,6 +1,6 @@
 interface Chat {
-    id: string;
-    title: string;
+    uuid: string;
+    name: string;
     updatedAt: Date;
 }
 
@@ -11,8 +11,9 @@ interface Bot {
 }
 
 interface ChatSelectionModelProps {
-    setChatSelection: (chatId: string) => void;
-    setBotSelection: (botId: string) => void;
+    setChatSelectionId: (chatId: string) => void;
+    setBotSelectionId: (botId: string) => void;
+    chatSelectionId?: string | null;
 }
 
 interface UserMenuProps {
@@ -24,8 +25,8 @@ interface UserMenuProps {
 interface ChatMessage {
     id: string;
     user_id: string;
-    role: string;
-    message: string;
+    role: number;
+    text: string;
     timestamp: Date;
 }
 

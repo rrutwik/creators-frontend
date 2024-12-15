@@ -4,38 +4,37 @@
     padding: 10px;
     background-color: #f4f4f9;
     height: 100vh;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
-  }
-  
-  .menu-button {
+}
+
+.menu-button {
     margin-bottom: 20px;
     color: #333;
-  }
-  
-  .sidebar-buttons {
+}
+
+.sidebar-buttons {
     position: absolute;
     bottom: 20px;
     width: 100%;
     padding: 0 20px;
-  }
-  
-  /* Styling for the buttons inside the sidebar */
-  button {
+}
+
+/* Styling for the buttons inside the sidebar */
+button {
     margin-top: 10px;
     width: 100%;
     justify-content: start;
-  }
-  
-  /* Adding a transition for opening and closing the sidebar */
-  .app-container .Drawer {
+}
+
+/* Adding a transition for opening and closing the sidebar */
+.app-container .Drawer {
     transition: margin 0.3s ease-in-out;
-  }
-  
-  /* Responsive adjustments for smaller screens */
-  @media (max-width: 768px) {
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
     .sidebar {
-      width: 100%;
+        width: 100%;
     }
-  }
-  
+}
