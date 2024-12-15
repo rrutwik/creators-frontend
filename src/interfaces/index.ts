@@ -35,4 +35,14 @@ interface ChatSession {
     user_id: string;
     messages: Array<ChatMessage>;
 }
-export type { Chat, Bot, ChatSelectionModelProps, UserMenuProps, ChatMessage, ChatSession };
+
+interface User {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    email: string;
+    credits: number
+}
+
+export type { User, Chat, Bot, ChatSelectionModelProps, UserMenuProps, ChatMessage, ChatSession };

@@ -7,25 +7,34 @@ import {
     Typography,
     Box,
     ListItemButton,
+    Button,
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ChatSelectionModel from './ChatSelectionModel';
+import AddCredits from './AddCredits';
+import { User } from '../interfaces';
+import { logout } from '../api';
 
 function Sidebar({
-    open,
+    user,
     onClose,
     chatSelectionId,
     setChatSelectionId,
     setBotSelectionId,
 }: {
     chatSelectionId: string | null;
-    open: boolean;
+    user: User,
     onClose: () => void;
     setChatSelectionId: (chatId: string) => void;
     setBotSelectionId: (botId: string) => void;
 }) {
     const [activeTab, setActiveTab] = useState('chats');
+
+    const handleLogout = () => {
+        logout();
+        window.location.href = '/'; // Redirect to the base URL
+    };
 
     return (
         <Drawer
@@ -39,6 +48,7 @@ function Sidebar({
                 sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
                 <Typography variant='h6'>Sidebar</Typography>
+                <Button onClick={() => handleLogout()}>Log Out</Button>
             </Box>
             <List>
                 <ListItemButton onClick={() => setActiveTab('chats')}>
@@ -62,7 +72,12 @@ function Sidebar({
                         setBotSelectionId={setBotSelectionId}
                     />
                 )}
-                {activeTab === 'settings' && <Typography>Settings</Typography>}
+                {activeTab === 'settings' && 
+                    <div>
+                        <Typography variant='h6'>Settings</Typography>
+                        <AddCredits user={user}></AddCredits>
+                    </div>
+                }
             </Box>
         </Drawer>
     );

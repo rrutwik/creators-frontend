@@ -87,7 +87,7 @@ function ChatModel({
     return (
         <div className="chat-container">
             <header className="chat-header">
-                <h1>Chat with {botSelection ?? 'Chatbot'}</h1>
+                <h1>Chat with {botSelection ?? 'GitaGPT'}</h1>
             </header>
             <div className="chat-messages">
                 {chatSession?.messages.length

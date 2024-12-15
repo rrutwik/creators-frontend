@@ -4,14 +4,13 @@ import useRazorpay from 'react-razorpay';
 import { useCallback } from 'react';
 import { createOrder } from '../api';
 import { RazorpayOptions } from 'react-razorpay';
+import { User } from '../interfaces';
+import '../css/AddCredits.css';
 
 function AddCredits({
     user,
 }: {
-    user: {
-        email: string;
-        name: string;
-    } | null;
+    user: User;
 }) {
     const [amount, setAmount] = useState<number>(11);
     const [Razorpay] = useRazorpay();
@@ -21,7 +20,7 @@ function AddCredits({
                 amount: amount,
             });
             const options: RazorpayOptions = {
-                key: 'rzp_test_CPzPXBNjXARaEm',
+                key: order.key_id,
                 amount: Number(amount * 100).toFixed(2),
                 currency: 'INR',
                 name: 'Payment For Adding Credits of ' + amount,
@@ -30,12 +29,9 @@ function AddCredits({
                     console.log({
                         response,
                     });
-                    // alert(response.razorpay_payment_id);
-                    // alert(response.razorpay_order_id);
-                    // alert(response.razorpay_signature);
                 },
                 prefill: {
-                    name: user?.name,
+                    name: user?.firstName,
                     email: user?.email,
                 },
             };
@@ -45,7 +41,7 @@ function AddCredits({
             const rzpay = new Razorpay(options);
             rzpay.open();
         },
-        [Razorpay, user?.email, user?.name]
+        [Razorpay, user?.email, user?.firstName]
     );
 
     if (!user) {
@@ -53,15 +49,18 @@ function AddCredits({
     }
 
     return (
-        <div>
-            <TextField
-                label='Amount'
-                type='number'
-                InputProps={{ inputProps: { min: 10, step: 1 } }}
-                value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-            />
-            <Button onClick={() => handlePayment(amount)}>Add</Button>
+        <div className='add_credits'>
+            <div>Credits {user.credits.toFixed(2)}</div>
+            <div>
+                <TextField
+                    label='Amount'
+                    type='number'
+                    InputProps={{ inputProps: { min: 10, step: 1 } }}
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                />
+                <Button onClick={() => handlePayment(amount)}>Add</Button>
+            </div>
         </div>
     );
 }

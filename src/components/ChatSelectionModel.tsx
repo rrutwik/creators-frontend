@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
     Box,
     List,
-    ListItem,
     ListItemText,
     Divider,
     CircularProgress,

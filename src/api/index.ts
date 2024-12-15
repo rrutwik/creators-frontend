@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse, ResponseType } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import { ChatSession } from '../interfaces';
 

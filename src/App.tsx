@@ -8,16 +8,11 @@ import './Sidebar.css'; // Assume new CSS for sidebar
 import Sidebar from './components/Sidebar';
 import { createTheme } from '@mui/material/styles';
 import ChatModel from './components/ChatModel';
+import { User } from './interfaces';
 
 function App() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [user, setUser] = useState<{
-        _id?: string;
-        firstName?: string;
-        lastName?: string;
-        username?: string;
-        email?: string;
-    }>({});
+    const [user, setUser] = useState<User | null>(null);
     const [selectedChatId, setChatSelectionId] = useState<string | null>(null);
     const [botSelectionId, setBotSelectionId] = useState<string | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
@@ -48,7 +43,7 @@ function App() {
         setAuthenticated(authStatus);
         if (authStatus) {
             const userDetails = await getUserDetails();
-            setUser(userDetails);
+            setUser(userDetails.data);
         }
     };
     useEffect(() => {
@@ -83,13 +78,11 @@ function App() {
 
     return (
         <div style={{ display: 'flex' }}>
-            {/* <Button className='switch_theme' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-          Switch Theme
-        </Button> */}
             <ThemeProvider theme={selectedTheme}>
+                {/* <header>Sathi App</header> */}
                 {user ? (
                     <Sidebar
-                        open={sidebarOpen}
+                        user={user}
                         chatSelectionId={selectedChatId}
                         onClose={handleDrawerToggle}
                         setChatSelectionId={setChatSelectionId}
