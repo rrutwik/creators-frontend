@@ -23,24 +23,15 @@ jobs:
 
     - name: Build the React app
       run: npm run build
+    
+    - name: Configure AWS CLI
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set default.region ap-south-1
 
-    - name: Deploy to S3
-      uses: jakejarvis/s3-sync-action@v0.5.1
-      with:
-        args: --acl public-read --delete
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
-        SOURCE_DIR: "build" # Directory containing the built React app
-        DESTINATION_BUCKET: creators-gpt
+    - name: Upload to S3
+      run: aws s3 sync build/ s3://creators-gpt/ --delete
 
-    - name: Invalidate CloudFront Cache
-      uses: chetan/invalidate-cloudfront-action@v1
-      with:
-        distribution-id: E2H6C63GVFFPD3
-        invalidation-path: '/*'
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
+    - name: Invalidate CloudFront
+      run: aws cloudfront create-invalidation --distribution-id E2H6C63GVFFPD3 --paths '/*'

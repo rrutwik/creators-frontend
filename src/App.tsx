@@ -17,7 +17,7 @@ function App() {
     const [botSelectionId, setBotSelectionId] = useState<string | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
     const clientId = '590138639341-52k54qmlvdhbbr9vsfmm8q4hgu4maln5.apps.googleusercontent.com';
-    const [theme, setTheme] = useState('light' as PaletteMode);
+    const [theme] = useState('light' as PaletteMode);
     const [refreshSideBarList, setRefreshSideBarList] = useState(false);
 
     const [selectedTheme, setSelectedTheme] = useState(
