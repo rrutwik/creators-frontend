@@ -63,26 +63,29 @@ function App() {
         verifyAuth();
     };
 
+    const toggleTheme = () => {
+        setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    };
+
     if (!authenticated) {
         return (
-            <GoogleOAuthProvider clientId={clientId}>
-                <GoogleLoginComponent isSuccess={onSuccess} />
-            </GoogleOAuthProvider>
+            <div>
+                <div style={{
+                    background: selectedTheme.palette.background.default
+                }}>
+                    <Switch checked={themeMode === 'dark'} onChange={toggleTheme} />
+                </div>
+                <ThemeProvider theme={selectedTheme}>
+                    <GoogleOAuthProvider clientId={clientId}>
+                        <GoogleLoginComponent isSuccess={onSuccess} />
+                    </GoogleOAuthProvider>
+                </ThemeProvider>
+            </div>
         );
     }
 
     const handleDrawerToggle = () => {
         setSidebarOpen(!sidebarOpen);
-    };
-
-
-    console.log(JSON.stringify({
-        selectedChatId,
-        refreshSideBarList,
-    }));
-
-    const toggleTheme = () => {
-        setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
 
     return (

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import useRazorpay from 'react-razorpay';
 import { useCallback } from 'react';
-import { createOrder, getUserDetails } from '../api';
+import { createOrder } from '../api';
 import { RazorpayOptions } from 'react-razorpay';
 import { User } from '../interfaces';
 import '../css/AddCredits.css';

@@ -112,7 +112,7 @@ function ChatModel({
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                width: '50%',
+                width: { xs: '100%', md: '60%' },
                 height: '100vh',
             }}
         >

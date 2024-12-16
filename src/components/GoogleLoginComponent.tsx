@@ -3,10 +3,12 @@ import Cookies from 'js-cookie';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { loginWithGoogle } from '../api';
 import { useState } from 'react';
+import { useTheme } from '@mui/material';
 
 const GoogleLoginComponent = ({ isSuccess }: { isSuccess: (value: boolean) => void }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const theme = useTheme();
 
     const handleLoginSuccess = async (response: any) => {
         setLoading(true);
@@ -25,13 +27,18 @@ const GoogleLoginComponent = ({ isSuccess }: { isSuccess: (value: boolean) => vo
 
     return (
         <Box
-            display='flex'
-            flexDirection='column'
-            alignItems='center'
-            justifyContent='center'
-            minHeight='100vh'
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems:'center',
+                backgroundColor: theme.palette.background.default,
+                justifyContent: 'center',
+                minHeight: '100vh'
+            }}
         >
-            <Typography variant='h4' gutterBottom>
+            <Typography variant='h4' gutterBottom sx={{
+                color: theme.palette.text.primary
+            }}>
                 Sign in with Google
             </Typography>
             {error && <Alert severity='error'>{error}</Alert>}
