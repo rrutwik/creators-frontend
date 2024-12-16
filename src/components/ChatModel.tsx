@@ -134,7 +134,7 @@ function ChatModel({
                 }}
             >
                 <Typography variant="h5" component="h1">
-                    Chat with {botSelection ?? 'GitaGPT'}
+                    Chat with {botSelection ?? 'Shri Krishna'}
                 </Typography>
             </Box>
             <Box
