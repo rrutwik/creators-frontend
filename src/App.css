@@ -2,7 +2,7 @@
 body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f9;
+    background-color: var(--background-color);
 }
 
 .switch_theme {
@@ -27,4 +27,14 @@ body {
     flex-grow: 1;
     padding: 20px;
     position: relative;
+}
+
+.side_bar_div {
+    display: flex;
+    float: left;
+    z-index: 1;
+    margin-left: 3px;
+    width: fit-content;
+    height: fit-content;
+    flex-direction: column;
 }

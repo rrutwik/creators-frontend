@@ -8,6 +8,7 @@ import {
     Typography,
     Button,
     ListItemButton,
+    useTheme,
 } from '@mui/material';
 import { Chat, ChatSelectionModelProps } from '../interfaces';
 import { getPastChats } from '../api';
@@ -29,13 +30,15 @@ const formatDateGroup = (date: Date) => {
 function ChatSelectionModel({
     chatSelectionId,
     setChatSelectionId,
-    setBotSelectionId: setBotSelection,
+    setBotSelectionId,
 }: ChatSelectionModelProps) {
     const [chats, setChats] = useState<Chat[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [groupedChats, setGroupedChats] = useState<any>({});
     const observer = React.useRef<IntersectionObserver>();
+
+    const theme = useTheme(); // Access the current theme
 
     const fetchChats = useCallback(async () => {
         setLoading(true);
@@ -97,10 +100,12 @@ function ChatSelectionModel({
     );
 
     return (
-        <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            <Typography variant='h6' sx={{ my: 2, mx: 1 }}>
-                Chat Selection
-            </Typography>
+        <Box sx={{
+                width: '100%',
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                boxShadow: theme.shadows[3],
+            }}>
             <Button onClick={() => setChatSelectionId('')}>Add Chat</Button>
 
             <List sx={{ overflow: 'auto', maxHeight: '500px' }}>

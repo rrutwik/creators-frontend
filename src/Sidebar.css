@@ -2,7 +2,7 @@
 .sidebar {
     width: 250px;
     padding: 10px;
-    background-color: #f4f4f9;
+    background-color: var(--background-color);
     height: 100vh;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;

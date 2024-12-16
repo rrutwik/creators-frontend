@@ -1,30 +1,27 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    padding: 20px;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-color);
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    align-content: stretch;
 }
 
 .chat-header {
     text-align: center;
-    font-size: 18px;
+    font-size: 10px;
     font-weight: bold;
 }
 
 .chat-messages {
     display: flex;
     flex-direction: column;
-    min-height: 100px;
-    margin: 20px 0;
+    flex-grow: 1;
     overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
 }
 
 .chat-message {
@@ -34,7 +31,7 @@
 .user-message p {
     background-color: #dcf8c6;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 10px;
     max-width: 80%;
     margin-left: auto;
 }
@@ -42,34 +39,47 @@
 .bot-message p {
     background-color: #e4e6eb;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 10px;
     max-width: 80%;
 }
 
 .chat-input-container {
     display: flex;
-    margin-top: 10px;
+    gap: 15px;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--background-color);
+    border-radius: 25px;
 }
 
 .chat-input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    box-sizing: border-box;
 }
 
 .send-button {
-    background-color: #4caf50;
+    background-color: #007bff;
     color: white;
     border: none;
+    border-radius: 25px;
     padding: 10px 20px;
-    border-radius: 20px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
 }
 
 .send-button:disabled {
-    background-color: #ddd;
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
