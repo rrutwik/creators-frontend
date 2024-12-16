@@ -16,15 +16,15 @@ function AddCredits({
     const [Razorpay] = useRazorpay();
     const handlePayment = useCallback(
         async (amount: number) => {
-            const order = await createOrder({
+            const orderResponse = await createOrder({
                 amount: amount,
             });
             const options: RazorpayOptions = {
-                key: order.key_id,
+                key: orderResponse.key_id,
                 amount: Number(amount * 100).toFixed(2),
                 currency: 'INR',
                 name: 'Payment For Adding Credits of ' + amount,
-                order_id: order.id,
+                order_id: orderResponse.order_id,
                 handler: function (response) {
                     console.log({
                         response,
