@@ -10,6 +10,11 @@ import { createTheme } from '@mui/material/styles';
 import ChatModel from './components/ChatModel';
 import { User } from './interfaces';
 import MenuIcon from '@mui/icons-material/Menu'; // Import MenuIcon
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+function ProtectedRoute({ authenticated, children }: { authenticated: boolean; children: JSX.Element }) {
+    return authenticated ? children : <Navigate to="/login" />;
+}
 
 function App() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -51,8 +56,6 @@ function App() {
             setUser(userDetails.data);
         }
     };
-    useEffect(() => {
-    }, [selectedChatId, refreshSideBarList]);
 
     useEffect(() => {
         verifyAuth();
@@ -67,67 +70,78 @@ function App() {
         setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
 
-    if (!authenticated) {
-        return (
-            <div>
-                <div style={{
-                    background: selectedTheme.palette.background.default
-                }}>
-                    <Switch checked={themeMode === 'dark'} onChange={toggleTheme} />
-                </div>
-                <ThemeProvider theme={selectedTheme}>
-                    <GoogleOAuthProvider clientId={clientId}>
-                        <GoogleLoginComponent isSuccess={onSuccess} />
-                    </GoogleOAuthProvider>
-                </ThemeProvider>
-            </div>
-        );
-    }
-
     const handleDrawerToggle = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
     return (
-        <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+        <Router>
             <ThemeProvider theme={selectedTheme}>
-                {user ? (
-                    <div className='side_bar_div'>
-                        <IconButton
-                            className={`toggle-icon ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
-                            onClick={handleDrawerToggle}
-                            style={{
-                                color: themeMode === 'dark' ? selectedTheme.palette.primary.light : selectedTheme.palette.text.primary,
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <div>
-                            <Switch checked={themeMode === 'dark'} onChange={toggleTheme} />
-                        </div>
-                        <Sidebar
-                            open={sidebarOpen}
-                            user={user}
-                            chatSelectionId={selectedChatId}
-                            openRechargeOption={openRechargeOption}
-                            onClose={handleDrawerToggle}
-                            setChatSelectionId={setChatSelectionId}
-                            setBotSelectionId={setBotSelectionId}
-                        />
-                    </div>
-                ) : null}
-                {user ? (
-                    <ChatModel
-                        chatSelectionId={selectedChatId}
-                        botSelection={botSelectionId}
-                        setOpenRechargeOption={setOpenRechargeOption}
-                        setChatSelectionId={setChatSelectionId}
-                        setRefreshSideBarList={setRefreshSideBarList}
+                <Routes>
+                    {/* Login Route */}
+                    <Route
+                        path="/login"
+                        element={
+                            !authenticated ? (
+                                <div style={{ background: selectedTheme.palette.background.default }}>
+                                    <Switch checked={themeMode === 'dark'} onChange={toggleTheme} />
+                                    <GoogleOAuthProvider clientId={clientId}>
+                                        <GoogleLoginComponent isSuccess={onSuccess} />
+                                    </GoogleOAuthProvider>
+                                </div>
+                            ) : (
+                                <Navigate to="/" />
+                            )
+                        }
                     />
-                ) : null}
+                    {/* Protected Home Route */}
+                    <Route
+                        path="/"
+                        element={
+                            <ProtectedRoute authenticated={authenticated}>
+                                <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+                                    {user ? (
+                                        <div className="side_bar_div">
+                                            <IconButton
+                                                className={`toggle-icon ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
+                                                onClick={handleDrawerToggle}
+                                                style={{
+                                                    color: themeMode === 'dark' ? selectedTheme.palette.primary.light : selectedTheme.palette.text.primary,
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                <MenuIcon />
+                                            </IconButton>
+                                            <Switch checked={themeMode === 'dark'} onChange={toggleTheme} />
+                                            <Sidebar
+                                                open={sidebarOpen}
+                                                user={user}
+                                                chatSelectionId={selectedChatId}
+                                                openRechargeOption={openRechargeOption}
+                                                onClose={handleDrawerToggle}
+                                                setChatSelectionId={setChatSelectionId}
+                                                setBotSelectionId={setBotSelectionId}
+                                            />
+                                        </div>
+                                    ) : null}
+                                    {user ? (
+                                        <ChatModel
+                                            chatSelectionId={selectedChatId}
+                                            botSelection={botSelectionId}
+                                            setOpenRechargeOption={setOpenRechargeOption}
+                                            setChatSelectionId={setChatSelectionId}
+                                            setRefreshSideBarList={setRefreshSideBarList}
+                                        />
+                                    ) : null}
+                                </div>
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Redirect to Login if Route Not Found */}
+                    <Route path="*" element={<Navigate to="/login" />} />
+                </Routes>
             </ThemeProvider>
-        </div>
+        </Router>
     );
 }
 

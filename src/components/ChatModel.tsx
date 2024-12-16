@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getChat, sendMessage } from '../api';
 import { ChatSession } from '../interfaces';
 import { Button, TextField, useTheme, Box, Typography, CircularProgress } from '@mui/material';
@@ -22,6 +22,15 @@ function ChatModel({
     const [newMessage, setNewMessage] = useState(''); // To store the new message typed by the user
     const [loading, setLoading] = useState(false); // To show loading while sending a message
     const theme = useTheme();
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatSession?.messages]);
 
     // Polling to fetch chat session until last message is from the bot
     const fetchChatSession = useCallback(async (chatSelectionId?: string | null) => {
