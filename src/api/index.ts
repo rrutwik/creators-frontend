@@ -114,10 +114,19 @@ export const getAvailableBots = () => {
     };
 };
 
-export const createOrder = (body: { amount: number }) => {
+export const createRazorPayOrder = (body: { amount: number }) => {
     return handleRequest(() =>
         getAuthenticatedAxiosInstance().post('/user/create_razorpay_order', body)
     );
+};
+
+export const getRazorPayOrder = (body: { order_id: number }) => {
+    return handleRequest(() =>
+        getAuthenticatedAxiosInstance().get('/user/get_razorpay_order', {
+          params: {
+            order_id: body.order_id
+          }
+        }));
 };
 
 export const getChat = (chatId: string) => {

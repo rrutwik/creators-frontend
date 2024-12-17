@@ -101,6 +101,8 @@ function ChatSelectionModel({
 
     return (
         <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
                 width: '100%',
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
@@ -108,7 +110,7 @@ function ChatSelectionModel({
             }}>
             <Button onClick={() => setChatSelectionId('')}>Add Chat</Button>
 
-            <List sx={{ overflow: 'auto', maxHeight: '500px' }}>
+            <List sx={{ overflow: 'auto' }}>
                 {Object.keys(groupedChats).map((group, index) => (
                     <div key={group}>
                         <Typography variant='subtitle1' sx={{ mt: 2, ml: 1, fontWeight: 'bold' }}>

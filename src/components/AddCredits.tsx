@@ -1,25 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, Box } from '@mui/material';
 import useRazorpay from 'react-razorpay';
 import { useCallback } from 'react';
-import { createOrder } from '../api';
+import { createRazorPayOrder, getRazorPayOrder } from '../api';
 import { RazorpayOptions } from 'react-razorpay';
-import { User } from '../interfaces';
 import '../css/AddCredits.css';
+import { useAppContext } from '../AppContext';
 
 const maxAmount = 500;
 const minAmount = 1;
 
-function AddCredits({
-    user,
-}: {
-    user: User;
-}) {
+function AddCredits() {
     const [amount, setAmount] = useState<number>(100);
     const [error, setError] = useState<string | null>(null);
     const [Razorpay] = useRazorpay();
-    const currentUser = useRef<User>();
-    
+    const { user, getUserDetails, loadingUser } = useAppContext();
+
     const validateAmount = (value: number) => {
         if (value < minAmount) {
             return `Amount must be at least ${minAmount}.`;
@@ -31,8 +27,7 @@ function AddCredits({
     };
 
     useEffect(() => {
-        currentUser.current = user;
-    }, [user]);
+    }, [loadingUser]);
 
     const handlePayment = useCallback(
         async (amount: number) => {
@@ -43,20 +38,21 @@ function AddCredits({
             }
             setError(null);
 
-            const orderResponse = await createOrder({
+            const orderResponse = await createRazorPayOrder({
                 amount: amount,
             });
             const options: RazorpayOptions = {
                 key: orderResponse.key_id,
                 amount: Number(amount * 100).toFixed(2),
                 currency: 'INR',
-                name: 'Payment For Adding Credits of ' + amount,
+                name: 'Payment of ' + amount,
                 order_id: orderResponse.order_id,
                 handler: function (response) {
-                    console.log({
-                        response,
+                    setTimeout(() => {
+                        getRazorPayOrder({ order_id: orderResponse.order_id }).then(() => {
+                        getUserDetails(); // Fetch updated user details after payment
                     });
-                },
+                }, 5000)},
                 prefill: {
                     name: user?.firstName,
                     email: user?.email,
@@ -65,11 +61,11 @@ function AddCredits({
             const rzpay = new Razorpay(options);
             rzpay.open();
         },
-        [Razorpay, user?.email, user?.firstName]
+        [Razorpay, getUserDetails, user?.email, user?.firstName]
     );
 
     if (!user) {
-        return null;
+        return <div>Error: User not found</div>;
     }
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +78,12 @@ function AddCredits({
 
     return (
         <div className='add_credits'>
-            <div><span>Credits </span><span>{currentUser.current?.credits.toFixed(2)}</span></div>
-            <div>
+            <div><span>Credits </span><span>{user.credits.toFixed(2)}</span></div>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px'
+            }}>
                 <TextField
                     label='Amount'
                     type='number'
@@ -98,9 +98,9 @@ function AddCredits({
                     onClick={() => handlePayment(amount)} 
                     disabled={!!error || amount < minAmount || amount > maxAmount}
                 >
-                    Add
+                    Add Credits
                 </Button>
-            </div>
+            </Box>
         </div>
     );
 }

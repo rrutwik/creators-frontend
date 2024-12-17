@@ -19,12 +19,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChatSelectionModel from './ChatSelectionModel';
 import AddCredits from './AddCredits';
-import { User } from '../interfaces';
 import { logout } from '../api';
 import './SideBar.css';
 
 function Sidebar({
-    user,
     open: sidebarOpen,
     onClose,
     openRechargeOption,
@@ -34,16 +32,13 @@ function Sidebar({
 }: {
     chatSelectionId: string | null;
     open: boolean;
-    user: User;
     openRechargeOption: boolean,
     onClose: () => void;
     setChatSelectionId: (chatId: string) => void;
     setBotSelectionId: (botId: string) => void;
 }) {
     const [activeTab, setActiveTab] = useState(openRechargeOption ? 'settings' :'chats');
-    console.log({
-        activeTab: activeTab
-    });
+
     const theme = useTheme();
 
     const handleLogout = async () => {
@@ -65,7 +60,10 @@ function Sidebar({
         <ListItemButton
             selected={active}
             onClick={onClick}
+            className='testing'
             sx={{
+                justifyContent: 'space-between',
+                display: 'flex',
                 '&.Mui-selected': { backgroundColor: 'primary.light', color: 'primary.contrastText' },
                 '&:hover': { backgroundColor: 'action.hover' },
             }}
@@ -73,7 +71,9 @@ function Sidebar({
             <ListItemIcon sx={{ color: active ? 'primary.main' : 'text.secondary' }}>
                 {icon}
             </ListItemIcon>
-            <ListItemText primary={label} />
+            <ListItemText primary={label} sx={{
+                width: '1px'
+            }} />
         </ListItemButton>
     );
 
@@ -92,7 +92,7 @@ function Sidebar({
             ModalProps={{ keepMounted: true }} // Improves performance on mobile
             PaperProps={{
                 sx: {
-                    width: { xs: '50%', sm: '300px', md: '20%' },
+                    width: { xs: '30%', sm: '20%', md: '20%' },
                     boxSizing: 'border-box',
                     display: 'flex',
                     flexDirection: 'column',
@@ -110,8 +110,11 @@ function Sidebar({
                     }}
                 >
                     <Button
+                        sx={{
+                            fontSize: { xs: '1vw' }
+                        }}
                         startIcon={<LogoutIcon />}
-                        variant="outlined"
+                        variant="contained"
                         onClick={handleLogout}
                     >
                         Log Out
@@ -134,7 +137,10 @@ function Sidebar({
                 </Box>
             </div>
             {/* Navigation */}
-            <List>
+            <List 
+            sx={{
+                width: 'parent'
+            }}>
                 <TabButton
                     label="Chats"
                     icon={<ChatIcon />}
@@ -167,6 +173,10 @@ function Sidebar({
                 )}
                 {activeTab === 'settings' && (
                     <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        paddingTop: '2px',
                         backgroundColor: theme.palette.background.default,
                         color: theme.palette.text.primary,
                         boxShadow: theme.shadows[3],
@@ -174,13 +184,11 @@ function Sidebar({
                     }}>
                         <Typography variant="h6" 
                             sx={{
-                                width: '100%',
-                                alignContent: 'center'
                             }}
                             gutterBottom>
                             Settings
                         </Typography>
-                        <AddCredits user={user} />
+                        <AddCredits />
                     </Box>
                 )}
                 </div>

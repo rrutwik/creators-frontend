@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getChat, sendMessage } from '../api';
+import { getChat, getUserDetails, sendMessage } from '../api';
 import { ChatSession } from '../interfaces';
 import { Button, TextField, useTheme, Box, Typography, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send'; // Import Material-UI Send Icon
@@ -92,6 +92,7 @@ function ChatModel({
         } catch (error: any) {
             if (error?.response?.data?.status === '1000') {
                 window.alert(error?.response?.data?.message);
+                getUserDetails();
                 setOpenRechargeOption(true);
             }
             console.error('Error sending message:', error);
@@ -176,6 +177,7 @@ function ChatModel({
                     gap: '15px',
                     alignItems: 'center',
                     padding: '10px',
+                    margin: '10px',
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: '25px',
                     boxShadow: theme.shadows[2],
@@ -205,7 +207,7 @@ function ChatModel({
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
                 />
-                <Button
+                {!newMessage.trim() ? <Button
                     sx={{
                         backgroundColor: theme.palette.primary.main,
                         color: theme.palette.primary.contrastText,
@@ -224,10 +226,10 @@ function ChatModel({
                         },
                     }}
                     onClick={handleSendMessage}
-                    disabled={loading || !newMessage.trim()}
+                    disabled={loading}
                 >
                     {loading ? <CircularProgress size={24} sx={{ color: theme.palette.primary.contrastText }} /> : <SendIcon sx={{ fontSize: '1.5rem' }} />}
-                </Button>
+                </Button> : null }
             </Box>
         </Box>
         </Box>
