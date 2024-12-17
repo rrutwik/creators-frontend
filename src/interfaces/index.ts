@@ -1,19 +1,17 @@
 interface Chat {
     uuid: string;
     name: string;
+    chatbot_id?: {
+        name: string
+    },
     updatedAt: Date;
-}
-
-interface Bot {
-    uuid: string;
-    name: string;
-    createdAt: Date;
 }
 
 interface ChatSelectionModelProps {
     setChatSelectionId: (chatId: string) => void;
-    setBotSelectionId: (botId: string) => void;
+    setSelectedBot: (bot: Bot) => void;
     chatSelectionId?: string | null;
+    setSidebarOpen: (close: boolean) => void
 }
 
 interface UserMenuProps {
@@ -33,6 +31,7 @@ interface ChatMessage {
 interface ChatSession {
     uuid: string;
     user_id: string;
+    chatbot_id: Bot,
     messages: Array<ChatMessage>;
 }
 
@@ -43,6 +42,11 @@ interface User {
     username: string;
     email: string;
     credits: number
+}
+
+interface Bot {
+    _id: string,
+    name: string
 }
 
 export type { User, Chat, Bot, ChatSelectionModelProps, UserMenuProps, ChatMessage, ChatSession };

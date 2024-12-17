@@ -21,21 +21,24 @@ import ChatSelectionModel from './ChatSelectionModel';
 import AddCredits from './AddCredits';
 import { logout } from '../api';
 import './SideBar.css';
+import { Bot } from '../interfaces';
 
 function Sidebar({
     open: sidebarOpen,
     onClose,
     openRechargeOption,
     chatSelectionId,
+    setSidebarOpen,
     setChatSelectionId,
-    setBotSelectionId,
+    setSelectedBot,
 }: {
     chatSelectionId: string | null;
     open: boolean;
     openRechargeOption: boolean,
     onClose: () => void;
+    setSidebarOpen: any;
     setChatSelectionId: (chatId: string) => void;
-    setBotSelectionId: (botId: string) => void;
+    setSelectedBot: (bot: Bot) => void;
 }) {
     const [activeTab, setActiveTab] = useState(openRechargeOption ? 'settings' :'chats');
 
@@ -136,7 +139,6 @@ function Sidebar({
                     </Tooltip>
                 </Box>
             </div>
-            {/* Navigation */}
             <List 
             sx={{
                 width: 'parent'
@@ -168,7 +170,8 @@ function Sidebar({
                     <ChatSelectionModel
                         chatSelectionId={chatSelectionId}
                         setChatSelectionId={setChatSelectionId}
-                        setBotSelectionId={setBotSelectionId}
+                        setSidebarOpen={setSidebarOpen}
+                        setSelectedBot={setSelectedBot}
                     />
                 )}
                 {activeTab === 'settings' && (

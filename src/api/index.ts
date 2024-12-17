@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
-import { ChatSession } from '../interfaces';
+import { Bot, ChatSession } from '../interfaces';
 
 const BASE_URL = 'https://backend-api.techkarmic.com';
 
@@ -108,12 +108,6 @@ export const getPastChats = async (offset: number, limit: number) => {
     return data.data;
 };
 
-export const getAvailableBots = () => {
-    return {
-        data: [{ uuid: 'gpt-chat', name: 'Gita GPT', createdAt: new Date() }],
-    };
-};
-
 export const createRazorPayOrder = (body: { amount: number }) => {
     return handleRequest(() =>
         getAuthenticatedAxiosInstance().post('/user/create_razorpay_order', body)
@@ -133,9 +127,16 @@ export const getChat = (chatId: string) => {
     return handleRequest(() => getAuthenticatedAxiosInstance().get(`/chat/${chatId}`));
 };
 
-export const sendMessage = (message: string, chatUUID?: string) => {
+export const sendMessage = (message: string, chatUUID?: string, chatbot_id?: string) => {
     return handleRequest<{message: string, data: ChatSession}>(() =>
-        getAuthenticatedAxiosInstance().post(`/chat/message`, { chat_id: chatUUID, message })
+        getAuthenticatedAxiosInstance().post(`/chat/message`, { chat_id: chatUUID, message, chatbot_id })
     );
 };
+
+export const getAvailableBots = async () => {
+    return handleRequest<{records: Bot[], total: number}>(() =>
+        getAuthenticatedAxiosInstance().get('/chatbots')
+    );
+}
+
 export {}; // Ensure TypeScript recognizes this file as a module

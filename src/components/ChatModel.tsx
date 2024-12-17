@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getChat, getUserDetails, sendMessage } from '../api';
-import { ChatSession } from '../interfaces';
+import { Bot, ChatSession } from '../interfaces';
 import { Button, TextField, useTheme, Box, Typography, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send'; // Import Material-UI Send Icon
 
 
 function ChatModel({
     chatSelectionId,
-    botSelection,
+    selectedBot,
     setOpenRechargeOption,
-    setRefreshSideBarList,
-    setChatSelectionId,
 }: {
     chatSelectionId: string | null;
-    botSelection: string | null;
+    selectedBot: Bot | null;
     setOpenRechargeOption: (ans: boolean) => void;
     setRefreshSideBarList: (ans: boolean) => void;
     setChatSelectionId: (chatId: string) => void;
@@ -81,7 +79,7 @@ function ChatModel({
 
         try {
             // Send new message to the chat API
-            const response = await sendMessage(newMessage, chatSession?.uuid);
+            const response = await sendMessage(newMessage, chatSession?.uuid, selectedBot?._id);
             const updatedSession = response.data;
             setChatSession(updatedSession);
             setNewMessage(''); // Reset the input field after sending the message
@@ -135,7 +133,7 @@ function ChatModel({
                 }}
             >
                 <Typography variant="h5" component="h1">
-                    Chat with {botSelection ?? 'Shri Krishna'}
+                   {selectedBot?.name ?? chatSession?.chatbot_id?.name ?? 'Select A Bot from List'}
                 </Typography>
             </Box>
             <Box
@@ -207,7 +205,7 @@ function ChatModel({
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
                 />
-                {!newMessage.trim() ? <Button
+                <Button
                     sx={{
                         backgroundColor: theme.palette.primary.main,
                         color: theme.palette.primary.contrastText,
@@ -229,7 +227,7 @@ function ChatModel({
                     disabled={loading}
                 >
                     {loading ? <CircularProgress size={24} sx={{ color: theme.palette.primary.contrastText }} /> : <SendIcon sx={{ fontSize: '1.5rem' }} />}
-                </Button> : null }
+                </Button>
             </Box>
         </Box>
         </Box>

@@ -8,7 +8,7 @@ import './Sidebar.css'; // Assume new CSS for sidebar
 import Sidebar from './components/Sidebar';
 import { createTheme } from '@mui/material/styles';
 import ChatModel from './components/ChatModel';
-import { User } from './interfaces';
+import { Bot, User } from './interfaces';
 import MenuIcon from '@mui/icons-material/Menu'; // Import MenuIcon
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './AppContext';
@@ -21,7 +21,7 @@ function App() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [selectedChatId, setChatSelectionId] = useState<string | null>(null);
-    const [botSelectionId, setBotSelectionId] = useState<string | null>(null);
+    const [selectedBot, setSelectedBot] = useState<Bot | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
     const clientId = '590138639341-52k54qmlvdhbbr9vsfmm8q4hgu4maln5.apps.googleusercontent.com';
     const [themeMode, setThemeMode] = useState<PaletteMode>('dark');
@@ -45,6 +45,8 @@ function App() {
             })
         );
         if (openRechargeOption) {
+            setSidebarOpen(true);
+        } else {
             setSidebarOpen(true);
         }
     }, [themeMode, openRechargeOption]);
@@ -120,15 +122,16 @@ function App() {
                                                     chatSelectionId={selectedChatId}
                                                     openRechargeOption={openRechargeOption}
                                                     onClose={handleDrawerToggle}
+                                                    setSidebarOpen={setSidebarOpen}
                                                     setChatSelectionId={setChatSelectionId}
-                                                    setBotSelectionId={setBotSelectionId}
+                                                    setSelectedBot={setSelectedBot}
                                                 />
                                             </div>
                                         ) : null}
                                         {user ? (
                                             <ChatModel
                                                 chatSelectionId={selectedChatId}
-                                                botSelection={botSelectionId}
+                                                selectedBot={selectedBot}
                                                 setOpenRechargeOption={setOpenRechargeOption}
                                                 setChatSelectionId={setChatSelectionId}
                                                 setRefreshSideBarList={setRefreshSideBarList}

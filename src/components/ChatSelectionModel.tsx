@@ -10,8 +10,9 @@ import {
     ListItemButton,
     useTheme,
 } from '@mui/material';
-import { Chat, ChatSelectionModelProps } from '../interfaces';
+import { Bot, Chat, ChatSelectionModelProps } from '../interfaces';
 import { getPastChats } from '../api';
+import BotSelectionModal from './BotSelectionModal';
 
 // Helper function to format the date into different timeframes
 const formatDateGroup = (date: Date) => {
@@ -30,15 +31,24 @@ const formatDateGroup = (date: Date) => {
 function ChatSelectionModel({
     chatSelectionId,
     setChatSelectionId,
-    setBotSelectionId,
+    setSidebarOpen,
+    setSelectedBot,
 }: ChatSelectionModelProps) {
     const [chats, setChats] = useState<Chat[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [groupedChats, setGroupedChats] = useState<any>({});
     const observer = React.useRef<IntersectionObserver>();
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const theme = useTheme(); // Access the current theme
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
+    const handleSelectBot = (bot: Bot) => {
+        setSelectedBot(bot);
+        setChatSelectionId('');
+        setSidebarOpen(false);
+        console.log(`Selected Bot ID: ${bot._id}`);
+    };
 
     const fetchChats = useCallback(async () => {
         setLoading(true);
@@ -108,7 +118,12 @@ function ChatSelectionModel({
                 color: theme.palette.text.primary,
                 boxShadow: theme.shadows[3],
             }}>
-            <Button onClick={() => setChatSelectionId('')}>Add Chat</Button>
+            <Button onClick={handleOpenModal}>Select Bot</Button>
+            <BotSelectionModal
+                open={isModalOpen}
+                onClose={handleCloseModal}
+                onSelectBot={handleSelectBot}
+            />
 
             <List sx={{ overflow: 'auto' }}>
                 {Object.keys(groupedChats).map((group, index) => (
@@ -136,7 +151,7 @@ function ChatSelectionModel({
                                     onClick={() => handleChatChange(chat.uuid)}
                                 >
                                     <ListItemText
-                                        primary={chat.name}
+                                        primary={`${chat.name} - ${chat.chatbot_id?.name}`}
                                         secondary={`Updated: ${new Date(
                                             chat.updatedAt
                                         ).toLocaleDateString()}`}
