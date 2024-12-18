@@ -51,35 +51,32 @@ function ChatSelectionModel({
     };
 
     const fetchChats = useCallback(async () => {
+        if (loading || !hasMore) return; // Avoid fetching if already loading or no more data
         setLoading(true);
         try {
             const chatResponse = await getPastChats(chats.length, 10);
-            const newChats = chatResponse.records;
-            if (newChats.length > 0) {
-                setChats((prev) =>
-                    [...prev, ...newChats].filter((value, index, array) => {
-                        return array.findIndex((item) => item.uuid === value.uuid) === index;
-                    })
-                );
-            }
-            setHasMore(newChats.length > 0);
+            const newChats: Chat[] = chatResponse.records;
+            setChats((prev) => [...prev, ...newChats.filter((chat) => !prev.find((c) => c.uuid === chat.uuid))]);
+            setHasMore(chats.length < chatResponse.total);
         } finally {
             setLoading(false);
         }
-    }, [chats.length]);
+    }, [chats, loading, hasMore]);
 
     const lastChatElementRef = useCallback(
         (node: any) => {
-            if (loading) return;
+            if (loading) return; // Prevent multiple triggers while loading
             if (observer.current) observer.current.disconnect();
+
             observer.current = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting && hasMore) {
-                    fetchChats();
+                    fetchChats(); // Trigger fetch when last element is visible
                 }
             });
+
             if (node) observer.current.observe(node);
         },
-        [loading, hasMore, fetchChats]
+        [fetchChats, hasMore, loading]
     );
 
     // Group chats by date range
@@ -124,7 +121,6 @@ function ChatSelectionModel({
                 onClose={handleCloseModal}
                 onSelectBot={handleSelectBot}
             />
-
             <List sx={{ overflow: 'auto' }}>
                 {Object.keys(groupedChats).map((group, index) => (
                     <div key={group}>

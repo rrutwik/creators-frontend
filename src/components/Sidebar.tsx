@@ -36,7 +36,7 @@ function Sidebar({
     open: boolean;
     openRechargeOption: boolean,
     onClose: () => void;
-    setSidebarOpen: any;
+    setSidebarOpen: (open: boolean) => void;
     setChatSelectionId: (chatId: string) => void;
     setSelectedBot: (bot: Bot) => void;
 }) {

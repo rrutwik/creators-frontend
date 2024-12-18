@@ -20,11 +20,17 @@ interface UserMenuProps {
     onAddCredits: (amount: number) => void;
 }
 
+export enum MessageRole {
+    USER = 1,
+    ASSISTANT = 2,
+    SYSTEM = 3
+}
+
 interface ChatMessage {
-    id: string;
-    user_id: string;
-    role: number;
-    text: string;
+    _id: string;
+    role: MessageRole,
+    text: string,
+    isSpeaking: boolean,
     timestamp: Date;
 }
 
