@@ -123,16 +123,19 @@ function ChatModel({
 
     // Fetch only new messages
     const fetchNewMessages = useCallback(async (chatSelectionId?: string | null) => {
-        if (!chatSelectionId || !chatSession) return;
+        if (!chatSelectionId) return true;
         try {
             const response = await getChat(chatSelectionId);
             const data = response.data;
-
+            const _chatSession = data;
+            if (!chatSession) {
+                setChatSession({..._chatSession});
+            }
             // Check if the last message is from the bot (role 2)
             if (data.messages.length && data.messages[data.messages.length - 1].role === 2) {
                 const newMessage: ChatMessage = data.messages[data.messages.length - 1];
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
-                speak(newMessage.text, newMessage._id, chatSession.chatbot_id?.name);
+                speak(newMessage.text, newMessage._id, chatSession?.chatbot_id?.name);
                 return true; // Stop polling when the last message is from the bot
             }
             return false; // Continue polling
@@ -296,6 +299,7 @@ function ChatModel({
                                 color: theme.palette.text.primary,
                             },
                         }}
+                        disabled={!(selectedBot?.name || chatSession?.chatbot_id?.name)}
                         multiline={true}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
