@@ -34,6 +34,9 @@ const Message = ({ message, currentMessageId, onPlay, onStop, chatBotName }: Mes
         >
             <Typography sx={{
                 flex: message.role === 1 ? '0 1 100%' : '0 1 90%',
+                whiteSpace: 'pre-wrap',  // Allowing line breaks to be rendered as intended
+                overflow: 'hidden',
+                textOverflow: 'ellipsis', // To handle excess text
             }}>{message.text}</Typography>
             {message.role === 2 && (
                 <>

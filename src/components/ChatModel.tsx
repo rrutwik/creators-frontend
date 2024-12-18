@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getChat, getUserDetails, sendMessage } from '../api';
 import { Bot, ChatSession, ChatMessage } from '../interfaces';
-import { Button, TextField, useTheme, Box, Typography, CircularProgress } from '@mui/material';
+import { Button, TextField, useTheme, Box, Typography, CircularProgress, Divider } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import Message from './message/Message';
+import React from 'react';
 
 window.speechSynthesis.getVoices();
 
@@ -262,15 +263,17 @@ function ChatModel({
                         padding: '10px'
                     }}
                 >
-                    {messages.map((message: ChatMessage) => (
+                    {messages.map((message: ChatMessage, index) => (
+                    <React.Fragment key={message._id}>
                         <Message
-                            key={message._id}
                             message={message}
                             currentMessageId={currentMessageId}
                             onPlay={speak}
                             onStop={stopSpeaking}
                             chatBotName={chatSession?.chatbot_id?.name}
                         />
+                        {index < messages.length - 1 && <Divider sx={{ my: 2 }} />} {/* Adds a line divider between messages */}
+                    </React.Fragment>
                     ))}
                     <div ref={messagesEndRef} />
                 </Box>
