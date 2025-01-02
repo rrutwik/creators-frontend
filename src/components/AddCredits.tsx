@@ -17,12 +17,15 @@ function AddCredits() {
     const { user, getUserDetails, loadingUser } = useAppContext();
 
     const validateAmount = (value: number) => {
+
         if (value < minAmount) {
             return `Amount must be at least ${minAmount}.`;
         }
+
         if (value > maxAmount) {
             return `Amount cannot exceed ${maxAmount}.`;
         }
+
         return null;
     };
 

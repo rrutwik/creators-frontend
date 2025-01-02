@@ -46,7 +46,7 @@ function ChatModel({
         return () => {
             stopSpeaking(); // Stop speaking on unmount or refresh
         };
-    }, [stopSpeaking]);
+    }, [chatSelectionId, stopSpeaking]);
 
     useEffect(() => {
         scrollToBottom();
@@ -54,7 +54,6 @@ function ChatModel({
 
     const getVoiceForBot = (botName?: string, gender: "male" | "female" = "female"): SpeechSynthesisVoice | null => {
         let voices = window.speechSynthesis.getVoices();
-        // console.log(JSON.stringify(voices));
         const voiceMap: Record<string, { male: string; female: string }> = {
             "Bhagwat Gita": {
                 male: "Rishi",           // Indian English Male
@@ -96,19 +95,25 @@ function ChatModel({
 
     // Function to handle speech synthesis
     const speak = useCallback((text: string, messageId: string, botName?: string) => {
+
         stopSpeaking(); // Stop any ongoing speech
+
         if (!window.speechSynthesis) return;
     
         const utterance = new SpeechSynthesisUtterance(text);
+
         const selectedVoice = getVoiceForBot(botName);
+
         console.log({
             selectedVoice
         });
+
         if (selectedVoice) {
             utterance.voice = selectedVoice;
         }
-        utterance.rate = 1.3; // Set speech rate (1 is normal)
-        utterance.pitch = 1; // Set speech pitch
+
+        utterance.rate = 1.0; // Set speech rate (1 is normal)
+        utterance.pitch = 0.9; // Set speech pitch
         utterance.volume = 1; // Set speech volume
     
         setCurrentMessageId(messageId); // Track the current message being spoken
@@ -124,7 +129,9 @@ function ChatModel({
 
     // Fetch only new messages
     const fetchNewMessages = useCallback(async (chatSelectionId?: string | null) => {
+
         if (!chatSelectionId) return true;
+
         try {
             const response = await getChat(chatSelectionId);
             const data = response.data;
@@ -144,6 +151,7 @@ function ChatModel({
             console.error('Error fetching new messages:', error);
             return false;
         }
+
     }, [chatSession, speak]);
 
     const fetchChatSession = useCallback(async (chatSelectionId?: string | null) => {
@@ -238,7 +246,10 @@ function ChatModel({
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: { xs: '100%', md: '60%' },
+                    width: { 
+                        xs: '100%', 
+                        md: '60%' 
+                    },
                     height: '100vh',
                 }}
             >

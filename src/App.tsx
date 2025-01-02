@@ -82,7 +82,6 @@ function App() {
             <Router>
                 <ThemeProvider theme={selectedTheme}>
                     <Routes>
-                        {/* Login Route */}
                         <Route
                             path="/login"
                             element={

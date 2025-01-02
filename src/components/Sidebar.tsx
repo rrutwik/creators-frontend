@@ -12,6 +12,7 @@ import {
     Tooltip,
     IconButton,
     useTheme,
+    styled,
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -63,19 +64,54 @@ function Sidebar({
         <ListItemButton
             selected={active}
             onClick={onClick}
-            className='testing'
             sx={{
                 justifyContent: 'space-between',
                 display: 'flex',
-                '&.Mui-selected': { backgroundColor: 'primary.light', color: 'primary.contrastText' },
-                '&:hover': { backgroundColor: 'action.hover' },
+                '&.Mui-selected': {
+                    backgroundColor: 'primary.light', 
+                    color: 'primary.contrastText' 
+                },
+                '&:hover': { 
+                    backgroundColor: 'action.hover' 
+                },
+                transition: 'background-color 0.3s ease, color 0.3s ease',
             }}
         >
-            <ListItemIcon sx={{ color: active ? 'primary.main' : 'text.secondary' }}>
+            <ListItemIcon sx={{
+                fontSize: {
+                    xs: "1rem",
+                    sm: "1.2rem",
+                    md: "1.5rem",
+                    lg: "2rem",
+                },
+                minWidth: {
+                    xs: "36px",
+                    sm: "40px",
+                    md: "48px",
+                    lg: "56px",
+                },
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: active ? 'primary.main' : 'text.secondary',
+                transition: 'color 0.3s ease',
+            }}>
                 {icon}
             </ListItemIcon>
             <ListItemText primary={label} sx={{
-                width: '1px'
+                fontSize: {
+                    xs: "1rem",
+                    sm: "1.2rem",
+                    md: "1.5rem",
+                    lg: "2rem",
+                },
+                minWidth: {
+                    xs: "36px",
+                    sm: "40px",
+                    md: "48px",
+                    lg: "56px",
+                },
+                width: '1vw'
             }} />
         </ListItemButton>
     );
@@ -114,7 +150,7 @@ function Sidebar({
                 >
                     <Button
                         sx={{
-                            fontSize: { xs: '1vw' }
+                            fontSize: { xs: '3vw', sm: '1vw', md: '1vw' },
                         }}
                         startIcon={<LogoutIcon />}
                         variant="contained"
@@ -139,19 +175,16 @@ function Sidebar({
                     </Tooltip>
                 </Box>
             </div>
-            <List 
-            sx={{
-                width: 'parent'
-            }}>
+            <List>
                 <TabButton
                     label="Chats"
-                    icon={<ChatIcon />}
+                    icon={<ChatIcon sx={{ fontSize: "inherit" }}/>}
                     active={activeTab === 'chats'}
                     onClick={() => setActiveTab('chats')}
                 />
                 <TabButton
                     label="Settings"
-                    icon={<SettingsIcon />}
+                    icon={<SettingsIcon sx={{ fontSize: "inherit" }}/>}
                     active={activeTab === 'settings'}
                     onClick={() => setActiveTab('settings')}
                 />

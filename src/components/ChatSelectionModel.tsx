@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import {
     Box,
     List,
@@ -37,12 +37,13 @@ function ChatSelectionModel({
     const [chats, setChats] = useState<Chat[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [groupedChats, setGroupedChats] = useState<any>({});
     const observer = React.useRef<IntersectionObserver>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const theme = useTheme(); // Access the current theme
+    const theme = useTheme();
+
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
+
     const handleSelectBot = (bot: Bot) => {
         setSelectedBot(bot);
         setChatSelectionId('');
@@ -50,54 +51,53 @@ function ChatSelectionModel({
         console.log(`Selected Bot ID: ${bot._id}`);
     };
 
-    const fetchChats = useCallback(async () => {
-        if (loading || !hasMore) return; // Avoid fetching if already loading or no more data
+    const fetchChats = useCallback(async (offset: number) => {
         setLoading(true);
         try {
-            const chatResponse = await getPastChats(chats.length, 10);
+            const chatResponse = await getPastChats(offset, 10);
             const newChats: Chat[] = chatResponse.records;
-            setChats((prev) => [...prev, ...newChats.filter((chat) => !prev.find((c) => c.uuid === chat.uuid))]);
-            setHasMore(chats.length < chatResponse.total);
+
+            setChats((prevChats) => [
+                ...prevChats,
+                ...newChats.filter((chat) => !prevChats.some((c) => c.uuid === chat.uuid)),
+            ]);
+            setHasMore(offset + newChats.length < chatResponse.total);
         } finally {
             setLoading(false);
         }
-    }, [chats, loading, hasMore]);
+    }, []);
 
     const lastChatElementRef = useCallback(
         (node: any) => {
-            if (loading) return; // Prevent multiple triggers while loading
+            if (loading) return;
+
             if (observer.current) observer.current.disconnect();
 
             observer.current = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting && hasMore) {
-                    fetchChats(); // Trigger fetch when last element is visible
+                    fetchChats(chats.length);
                 }
             });
 
             if (node) observer.current.observe(node);
         },
-        [fetchChats, hasMore, loading]
+        [chats.length, fetchChats, hasMore, loading]
     );
 
-    // Group chats by date range
     useEffect(() => {
-        const groups: any = {};
+        fetchChats(0); // Initial fetch
+        return () => observer.current?.disconnect();
+    }, [fetchChats]);
+
+    const groupedChats = useMemo(() => {
+        const groups: Record<string, Chat[]> = {};
         chats.forEach((chat) => {
             const group = formatDateGroup(chat.updatedAt);
-            if (!groups[group]) {
-                groups[group] = [];
-            }
+            if (!groups[group]) groups[group] = [];
             groups[group].push(chat);
         });
-        setGroupedChats(groups);
+        return groups;
     }, [chats]);
-
-    useEffect(() => {
-        fetchChats();
-        return () => {
-            if (observer.current) observer.current.disconnect();
-        };
-    }, [fetchChats]);
 
     const handleChatChange = useCallback(
         (uuid: string) => {
@@ -107,62 +107,50 @@ function ChatSelectionModel({
     );
 
     return (
-        <Box sx={{
+        <Box
+            sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 width: '100%',
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
                 boxShadow: theme.shadows[3],
-            }}>
+            }}
+        >
             <Button onClick={handleOpenModal}>Select Bot</Button>
             <BotSelectionModal
                 open={isModalOpen}
                 onClose={handleCloseModal}
                 onSelectBot={handleSelectBot}
             />
-            <List sx={{ overflow: 'auto' }}>
-                {Object.keys(groupedChats).map((group, index) => (
-                    <div key={group}>
-                        <Typography variant='subtitle1' sx={{ mt: 2, ml: 1, fontWeight: 'bold' }}>
-                            {group}
-                        </Typography>
-                        {groupedChats[group].map((chat: Chat, chatIndex: number) => (
-                            <React.Fragment key={chat.uuid}>
-                                <ListItemButton
-                                    style={{
-                                        backgroundColor:
-                                            chat.uuid === chatSelectionId
-                                                ? '#333'
-                                                : 'transparent', // Dark selection color
-                                        color:
-                                            chat.uuid === chatSelectionId ? '#fff' : 'inherit', // Adjust text color for contrast
-                                    }}
-                                    ref={
-                                        chatIndex === groupedChats[group].length - 1 &&
-                                        index === Object.keys(groupedChats).length - 1
-                                            ? lastChatElementRef
-                                            : null
-                                    }
-                                    onClick={() => handleChatChange(chat.uuid)}
-                                >
-                                    <ListItemText
-                                        primary={`${chat.name} - ${chat.chatbot_id?.name}`}
-                                        secondary={`Updated: ${new Date(
-                                            chat.updatedAt
-                                        ).toLocaleDateString()}`}
-                                    />
-                                </ListItemButton>
-                                <Divider />
-                            </React.Fragment>
-                        ))}
-                    </div>
-                ))}
-                {loading && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                        <CircularProgress />
-                    </Box>
-                )}
+            <List sx={{ overflow: 'auto', height: '100%' }}>    
+            {   chats.map((chat: Chat) => (
+                <React.Fragment key={chat.uuid}>
+                    <ListItemButton
+                        style={{
+                            backgroundColor:
+                                chat.uuid === chatSelectionId
+                                    ? '#333'
+                                    : 'transparent',
+                            color: chat.uuid === chatSelectionId ? '#fff' : 'inherit',
+                        }}
+                        onClick={() => handleChatChange(chat.uuid)}
+                    >
+                        <ListItemText
+                            primary={`${chat.name} - ${chat.chatbot_id?.name}`}
+                            secondary={`Updated: ${new Date(
+                                chat.updatedAt
+                            ).toLocaleDateString()}`}
+                        />
+                    </ListItemButton>
+                    {/* <Divider /> */}
+                </React.Fragment>
+            ))}
+            {loading && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                    <CircularProgress />
+                </Box>
+            )}
             </List>
         </Box>
     );
