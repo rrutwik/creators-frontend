@@ -23,7 +23,7 @@ function App() {
     const [selectedChatId, setChatSelectionId] = useState<string | null>(null);
     const [selectedBot, setSelectedBot] = useState<Bot | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
-    const clientId = '590138639341-52k54qmlvdhbbr9vsfmm8q4hgu4maln5.apps.googleusercontent.com';
+    const clientId = '201954194593-36t0nksh9jusg01k58et81ct27objt26.apps.googleusercontent.com';
     const [themeMode, setThemeMode] = useState<PaletteMode>('dark');
     const [, setRefreshSideBarList] = useState(false);
     const [openRechargeOption, setOpenRechargeOption] = useState(false);
